@@ -86,7 +86,7 @@ Two level schwarz with coarse space (inner region no PML)
 python -m bin.launch_job --job-config="bin/configs/single_GPU_job_config.gin" --experiment-name="non_uniform_DDM_with_direct_PML_solve256" --pipeline="DDM_global" --iterative-config="bin/configs/iterative/two_level_coarse_space_overlapping_schwarz_MG_256.gin"
 ```
 
-### Inverse Design
+# Inverse Design
 
 ## Wavelength division multiplexer (WDM)
 with ceviche backend:
