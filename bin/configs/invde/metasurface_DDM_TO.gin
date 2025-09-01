@@ -1,0 +1,77 @@
+import bin.inverse_design
+
+import sss.invde.opt
+import sss.invde.step_fn
+import sss.invde.filter_proj
+import sss.invde.constraints
+import sss.invde.utils.jax_utils
+
+import sss.design_problems.metasurface.metasurface
+import sss.design_problems.metasurface.metasurface_model
+
+run_inverse_design.design_challenge = "metasurface"
+CevicheDesign.log_fn_type = 'meta'
+MetasurfaceComponent.backend='DDM'
+
+############################ optimization args ###################################
+length_scale_pixel = 5
+CevicheDesign.length_scale_pixel = %length_scale_pixel
+
+CevicheDesign.save_bin = True
+CevicheDesign.step_fn = @ceviche_ccsa_step_fn
+CevicheDesign.latent_bounds = (0, 1)
+CevicheDesign.final_step_discretization = 'binary'
+
+_get_default_initializer.mean=0.5
+_get_default_initializer.stddev=0.001
+_get_default_initializer.length_scale = %length_scale_pixel
+
+CevicheDesign.steps_per_beta = 20
+CevicheDesign.steps_per_beta_during_constraint = 30
+CevicheDesign.beta_schedule  = [1024]
+# CevicheDesign.constraint_tolerance_schedule = [0,0,3] # used for nlopt
+CevicheDesign.constraint_weight_schedule = [0] # used for optax
+
+CevicheDesign.load_latent_path='/media/tmp0/chenkaim/checkpoints/sss/inverse_design_DDM256_meta-06_28_25T10_29_19/logs/step_20.h5'
+
+# CevicheDesign.opt_type = 'nlopt'
+CevicheDesign.opt_type = 'optax'
+CevicheDesign.lr = 3e-4
+CevicheDesign.end_lr = 3e-4
+
+############################ decode filter project ################################
+CevicheDesign.projection_fn = @tanh_projection
+CevicheDesign.decode_fn = @identity_op
+CevicheDesign.filter_fn = @conic_filter
+
+############################ constraint functions #################################
+eta_e = 0.75
+eta_d = 0.25 # 1 - eta_e
+indicator_c = 1e4
+
+constraint_solid_decode.eta_e = %eta_e
+constraint_solid_decode.indicator_c = %indicator_c
+constraint_void_decode.eta_d = %eta_d
+constraint_void_decode.indicator_c = %indicator_c
+
+constraints_function.solid_contraints_fn = @constraint_solid_decode
+constraints_function.void_contraints_fn = @constraint_void_decode
+CevicheDesign.constraints_function = @constraints_function
+
+############################ design challenge #####################################
+sim_resolution_nm = 40
+get_ceviche_metasurface_challenge.wavelengths_nm = [1200, 1400, 1600]
+get_ceviche_metasurface_challenge.focus_positions_nm = [(40000,-10000), (30000,0), (20000,10000)]
+# get_ceviche_metasurface_challenge.wavelengths_nm = [1200]
+# get_ceviche_metasurface_challenge.focus_positions_nm = [(38000,-10000)]
+
+MetasurfaceModel.grid_shape = (1284,1284)
+MetasurfaceModel.design_variable_shape_nm = (3000, 40000)
+MetasurfaceModel.source_spacing_nm = 400
+MetasurfaceModel.opt_flux_monitor_width_nm = 2000
+MetasurfaceModel.FOM_flux_monitor_width_nm = 6000
+MetasurfaceModel.dL_nm = %sim_resolution_nm
+MetasurfaceModel.eps_meta = 6
+
+MetasurfaceChallenge.sim_resolution_nm = %sim_resolution_nm
+MetasurfaceChallenge.design_resolution_nm = %sim_resolution_nm

@@ -1,0 +1,32 @@
+import sss.iterative.subdomain_solver
+import sss.data.simulation_dataset
+import sss.trainers.trainer_MG
+
+#### prepare data ####
+SimulationDataset.data_folder = "/media/tmp0/chenkaim/checkpoints/sss/crop_subdomain-05_27_25T15_40_56/generated_devices"
+
+SimulationDataset.pml_dominate = True
+SimulationDataset.data_mult = 1.0
+SubdomainSolver.dataset_fn = @SimulationDataset
+
+# SubdomainSolver.solver_type = "GMRES_setup"
+SubdomainSolver.solver_type = "BICGSTAB"
+
+###### (1) 10 FPI model 0.3%
+SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_with_PML-05_18_25T08_58_27/"
+SubdomainSolver.trainer_fn = @TrainerMG
+
+###### (2) 1 FPI model 5%
+# SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_with_PML-05_18_25T19_47_56/"
+# SubdomainSolver.trainer_fn = @TrainerMG
+
+###### (3) damping model
+# SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_damping-05_20_25T23_10_50/"
+# SubdomainSolver.residual_type = 'damping'
+# SubdomainSolver.trainer_fn = @TrainerMG
+
+SubdomainSolver.num_samples = 10
+SubdomainSolver.max_iter = 40
+SubdomainSolver.tol = 1e-6
+SubdomainSolver.plot_x_r_history = True
+SubdomainSolver.plot_N = 6

@@ -1,0 +1,40 @@
+import sss.data.simulation_dataset
+import sss.trainers.trainer
+
+#### prepare data ####
+SimulationDataset.data_folder = "/media/tmp0/chenkaim/checkpoints/sss/crop_subdomain-04_26_25T10_17_44/generated_devices"
+SimulationDataset.pml_dominate = True
+SimulationDataset.data_mult = 3.0e-5
+Trainer.dataset_fn = @SimulationDataset
+
+#### prepare trainer ####
+
+## physical setup
+Trainer.domain_sizex = 64
+Trainer.domain_sizey = 64
+Trainer.f_padding = 20
+Trainer.source_mult = 1e7
+Trainer.bc_mult = 3e1
+
+## hyperparam
+Trainer.epoch = 30 
+Trainer.batch_size = 80
+Trainer.start_lr = 1e-3
+Trainer.end_lr = 1e-5
+Trainer.weight_decay = 1e-4
+
+Trainer.fix_point_iter = 8
+Trainer.residual_clip = 1000.0
+
+## physics loss
+phys_start_epoch = 1
+ratio = 0.1
+
+## control
+Trainer.continue_train = False
+Trainer.load_from_checkpoint_path = None
+Trainer.world_size = 1
+Trainer.seed = 42
+
+run_model_training.trainer = @Trainer
+

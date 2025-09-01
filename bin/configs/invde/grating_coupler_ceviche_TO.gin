@@ -1,0 +1,74 @@
+import bin.inverse_design
+
+import sss.invde.opt
+import sss.invde.step_fn
+import sss.invde.filter_proj
+import sss.invde.constraints
+import sss.invde.utils.jax_utils
+
+import sss.design_problems.grating_coupler.grating_coupler
+import sss.design_problems.grating_coupler.grating_coupler_model
+
+run_inverse_design.design_challenge = "grating_coupler"
+CevicheDesign.log_fn_type = 'gc'
+GratingCouplerComponent.backend='ceviche'
+
+############################ optimization args ###################################
+length_scale_pixel = 1
+CevicheDesign.length_scale_pixel = %length_scale_pixel
+
+CevicheDesign.save_bin = True
+CevicheDesign.step_fn = @ceviche_ccsa_step_fn
+CevicheDesign.latent_bounds = (0, 1)
+CevicheDesign.final_step_discretization = 'multilevel'
+
+_get_default_initializer.mean=0.5
+_get_default_initializer.stddev=0.001
+_get_default_initializer.length_scale = %length_scale_pixel
+
+CevicheDesign.steps_per_beta = 50
+CevicheDesign.steps_per_beta_during_constraint = 20
+CevicheDesign.beta_schedule  = [64]
+# CevicheDesign.constraint_tolerance_schedule = [0,0,0,0,0,3] # used for nlopt
+CevicheDesign.constraint_weight_schedule = [0] # used for optax
+
+# CevicheDesign.opt_type = 'nlopt'
+CevicheDesign.opt_type = 'optax'
+CevicheDesign.lr = 3e-3
+CevicheDesign.end_lr = 1e-3
+
+############################ decode filter project ################################
+CevicheDesign.projection_fn = @tanh_projection
+CevicheDesign.decode_fn = @identity_op
+CevicheDesign.filter_fn = @conic_filter
+
+############################ constraint functions #################################
+eta_e = 0.75
+eta_d = 0.25 # 1 - eta_e
+indicator_c = 1e4
+
+constraint_solid_decode.eta_e = %eta_e
+constraint_solid_decode.indicator_c = %indicator_c
+constraint_void_decode.eta_d = %eta_d
+constraint_void_decode.indicator_c = %indicator_c
+
+constraints_function.solid_contraints_fn = @constraint_solid_decode
+constraints_function.void_contraints_fn = @constraint_void_decode
+CevicheDesign.constraints_function = @constraints_function
+
+############################ design challenge #####################################
+resolution_mm = 0.8
+get_ceviche_grating_coupler_challenge.wavelengths_mm = [24,32,40]
+GratingCouplerModel.grid_shape = (509,509)
+GratingCouplerModel.design_variable_shape_mm = (160, 240)
+GratingCouplerModel.source_spacing_mm = 12
+GratingCouplerModel.wg_thickness_mm = 16
+GratingCouplerModel.monitor_distance_mm = 80
+GratingCouplerModel.monitor_size_mm = 80
+GratingCouplerModel.eps_wg = 6
+GratingCouplerModel.eps_design_min = 2
+GratingCouplerModel.eps_design_max = 6
+GratingCouplerModel.dL_mm = %resolution_mm
+
+GratingCouplerChallenge.design_resolution_mm = %resolution_mm
+GratingCouplerChallenge.sim_resolution_mm = %resolution_mm

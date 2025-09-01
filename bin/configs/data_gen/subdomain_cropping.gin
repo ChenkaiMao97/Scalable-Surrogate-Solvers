@@ -1,0 +1,9 @@
+import sss.data.subdomain_cropper
+
+SubdomainCropper.input_data_folder = '/media/tmp0/chenkaim/checkpoints/sss/ceviche_data_gen-05_27_25T15_31_09/generated_devices'
+SubdomainCropper.crops_per_idx = 10
+SubdomainCropper.crop_dx = 256
+SubdomainCropper.crop_dy = 256
+SubdomainCropper.x_pad = 10
+SubdomainCropper.y_pad = 10
+SubdomainCropper.pml_thickness = 40

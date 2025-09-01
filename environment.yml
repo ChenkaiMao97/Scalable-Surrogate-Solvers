@@ -1,0 +1,38 @@
+name: sss
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+  - nvidia
+dependencies:
+  - python=3.10
+  - matplotlib
+  - numpy
+  - pandas
+  - clize
+  - gin-config
+  - pip
+  - tqdm
+  - pytorch=2.2.0
+  - pytorch-cuda=12.1
+  - jax[cuda12]
+  - jaxlib=*=*cuda*
+  - einops
+  - h5py
+  - pillow
+  - scikit-image
+  - jupyter
+  - plotly
+  - nlopt
+  - gin-config
+  - cupy
+  - optax
+  - pip:
+    - ceviche_challenges
+    - fvcore
+
+# to create env:
+# mamba create -f environment.yml
+
+# to update env:
+# mamba env update --file environment.yml --prune

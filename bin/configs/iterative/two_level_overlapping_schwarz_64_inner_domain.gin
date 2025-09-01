@@ -1,0 +1,48 @@
+import sss.iterative.global_solver
+import sss.iterative.two_level_schwarz
+import sss.data.ceviche_solver
+import sss.trainers.trainer_MG
+
+Nx = 700
+Ny = 700
+
+GlobalSolver.Nx = %Nx
+GlobalSolver.Ny = %Ny
+GlobalSolver.solver_type = "two_level_Schwarz"
+GlobalSolver.DDM_iters = 50
+GlobalSolver.momentum = 0.1
+GlobalSolver.half_periodic = False
+GlobalSolver.save_intermediate = True
+GlobalSolver.plot_N = 5
+GlobalSolver.spacing = 50
+
+### solve from random data using ceviche solver ###
+CevicheSolver.num_shapes = 1
+CevicheSolver.output_dir = None
+CevicheSolver.Nx = %Nx
+CevicheSolver.Ny = %Ny
+CevicheSolver.wavelengths = [30] # in mm
+CevicheSolver.dLs = [0.4] # in mm
+CevicheSolver.eps_zooms = [5,10,20]
+CevicheSolver.eps_sigmas = [5,10,20]
+
+### schwarz setup ###
+TwoLevelSchwarz.min_overlap = 3
+TwoLevelSchwarz.region_size = (64,64)
+TwoLevelSchwarz.variable_overlap = True
+TwoLevelSchwarz.periodic_padding = False
+
+### subdomain solver ###
+SubdomainSolver.old_model=True
+SubdomainSolver.solver_type = "GMRES"
+SubdomainSolver.model_loading_path = "/media/tmp0/chenkaim/checkpoints/sss/copied_models/pml_plus_device/"
+SubdomainSolver.trainer_fn = @TrainerMG
+SubdomainSolver.num_samples = 10
+SubdomainSolver.max_iter = 6
+SubdomainSolver.tol = 1e-5
+SubdomainSolver.plot_x_r_history = False
+
+
+# GlobalSolver.data_mult = 3e-5
+# SubdomainSolver.source_mult = 1e7
+# SubdomainSolver.bc_mult = 3e1

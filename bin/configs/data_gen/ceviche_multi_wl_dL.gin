@@ -1,0 +1,16 @@
+import sss.data.ceviche_solver
+
+CevicheSolver.Nx = 600
+CevicheSolver.Ny = 600
+CevicheSolver.wavelengths = [20, 25, 30] # in mm
+CevicheSolver.dLs = [0.5, 0.55, 0.6] # in mm
+CevicheSolver.eps_zooms = [5,10,20,50]
+CevicheSolver.eps_sigmas = [0,5,10,20,50]
+CevicheSolver.pml_x = 40
+CevicheSolver.pml_y = 40
+CevicheSolver.eps_max = 8
+CevicheSolver.eps_air = 1
+CevicheSolver.N_src = 10
+CevicheSolver.num_shapes = 10
+CevicheSolver.binary_shape_mask = None # optional binary shape mask to mask the device
+CevicheSolver.save_plots = True

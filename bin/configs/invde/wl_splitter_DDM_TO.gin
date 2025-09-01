@@ -1,0 +1,89 @@
+import bin.inverse_design
+
+import sss.invde.opt
+import sss.invde.step_fn
+import sss.invde.filter_proj
+import sss.invde.constraints
+import sss.design_problems.ceviche_challenge.general_block
+import sss.invde.utils.jax_utils
+
+run_inverse_design.design_challenge = "general_block"
+GeneralBlockComponent.backend='DDM'
+run_inverse_design.seed_ids = 1
+
+############################ optimization args ###################################
+length_scale_pixel = 10
+CevicheDesign.length_scale_pixel = %length_scale_pixel
+
+CevicheDesign.save_bin = True
+CevicheDesign.step_fn = @ceviche_ccsa_step_fn
+CevicheDesign.latent_bounds = (0,1)
+
+_get_default_initializer.mean=0.5
+_get_default_initializer.stddev=0.0
+_get_default_initializer.length_scale = %length_scale_pixel
+
+CevicheDesign.steps_per_beta = 10
+CevicheDesign.steps_per_beta_during_constraint = 20
+CevicheDesign.beta_schedule  = [32,64,128,256,512,1024]
+# CevicheDesign.constraint_tolerance_schedule = [0.0,0.0,0.0,3.0] # used for nlopt
+CevicheDesign.constraint_weight_schedule = [1,0,1,0,1,0] # used for optax
+
+# CevicheDesign.opt_type = 'nlopt'
+CevicheDesign.opt_type = 'optax'
+CevicheDesign.lr = 3e-3
+CevicheDesign.end_lr = 3e-4
+
+# CevicheDesign.load_latent_path='/media/tmp0/chenkaim/checkpoints/sss/inverse_design_DDM256-06_13_25T10_00_50/logs/step_21.h5'
+
+############################ decode filter project ################################
+CevicheDesign.projection_fn = @tanh_projection
+CevicheDesign.decode_fn = @identity_op
+CevicheDesign.filter_fn = @conic_filter
+
+############################ constraint functions #################################
+eta_e = 0.75
+eta_d = 0.25 # 1 - eta_e
+indicator_c = 1e4
+
+constraint_solid_decode.eta_e = %eta_e
+constraint_solid_decode.indicator_c = %indicator_c
+constraint_void_decode.eta_d = %eta_d
+constraint_void_decode.indicator_c = %indicator_c
+
+constraints_function.solid_contraints_fn = @constraint_solid_decode
+constraints_function.void_contraints_fn = @constraint_void_decode
+CevicheDesign.constraints_function = @constraints_function
+
+############################ design challenge #####################################
+resolution_nm = 12
+get_ceviche_general_block_challenge.variable_region_size_nm = (4560, 4560)
+get_ceviche_general_block_challenge.left_wg_options = [1]
+get_ceviche_general_block_challenge.right_wg_options = [3]
+get_ceviche_general_block_challenge.top_wg_options = [0]
+get_ceviche_general_block_challenge.bottom_wg_options = [0]
+get_ceviche_general_block_challenge.num_wg_weights = [1,1,1,1]
+get_ceviche_general_block_challenge.wg_model_order_options = [0]
+get_ceviche_general_block_challenge.randomize_width = False
+get_ceviche_general_block_challenge.randomize_center = False
+get_ceviche_general_block_challenge.symmetric_two_wg = True
+get_ceviche_general_block_challenge.resolution = %resolution_nm
+get_ceviche_general_block_challenge.save_wg_io_fields = False
+get_ceviche_general_block_challenge.wavelengths_nm = [465,530,625]
+get_ceviche_general_block_challenge.max_transmission_ports = [1,2,3]
+get_ceviche_general_block_challenge.random_objective = False
+get_ceviche_general_block_challenge.wg_length_nm = 780
+get_ceviche_general_block_challenge.wg_min_separation_nm = 600
+get_ceviche_general_block_challenge.wg_min_width_nm = 140
+get_ceviche_general_block_challenge.wg_max_width_nm = 340
+get_ceviche_general_block_challenge.wg_to_edge_pixels = 40
+get_ceviche_general_block_challenge.port_pml_offset_nm = 240
+get_ceviche_general_block_challenge.input_monitor_offset_nm = 48
+get_ceviche_general_block_challenge.wg_field_spacing_nm = 120
+get_ceviche_general_block_challenge.wg_mode_padding_nm = 240
+get_ceviche_general_block_challenge.cladding_permittivity = 1.0
+get_ceviche_general_block_challenge.slab_permittivity = 6
+
+GeneralBlockChallenge.design_resolution_nm = %resolution_nm
+GeneralBlockChallenge.sim_resolution_nm = %resolution_nm
+

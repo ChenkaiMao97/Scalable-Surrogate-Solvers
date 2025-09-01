@@ -1,0 +1,24 @@
+from sss.models import MG_UFO2d_broadband
+
+MGUFO2d_broadband.domain_sizes = (256,256)
+MGUFO2d_broadband.paddings = (32,32)
+
+MGUFO2d_broadband.dim_mults = [1,2,3,4]
+MGUFO2d_broadband.conv_blocks = [1,2,3,4]
+MGUFO2d_broadband.use_fourier_setup = [False, False, False, False]
+MGUFO2d_broadband.use_fourier_solve = [False, True, True, True]
+MGUFO2d_broadband.setup_HIDDEN_DIM = 32
+MGUFO2d_broadband.setup_HIDDEN_DIM_freq = 32
+MGUFO2d_broadband.solve_HIDDEN_DIM = 16
+MGUFO2d_broadband.solve_HIDDEN_DIM_freq = 16
+MGUFO2d_broadband.ref_freq = 0.022727 # 1/44
+MGUFO2d_broadband.f_modes = (64, 32)
+MGUFO2d_broadband.modes_descale = 2.0
+MGUFO2d_broadband.input_channel_eps = 2 # complex valued
+MGUFO2d_broadband.input_channel_rhs = 2
+MGUFO2d_broadband.outc = 2
+MGUFO2d_broadband.periodic = (False, False)
+MGUFO2d_broadband.ALPHA = 0.01
+MGUFO2d_broadband.field_mult = 1.0
+
+model_factory.model_fn = @MGUFO2d_broadband

@@ -1,0 +1,12 @@
+*.png
+*.jpg
+*.mp4
+*.npy
+*.pyc
+*log*
+*.pt
+*.ckpt
+*.gif
+*.txt
+*.bash
+experiments

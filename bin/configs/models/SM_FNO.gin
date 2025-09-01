@@ -1,0 +1,16 @@
+import sss.models
+import sss.models.SM_FNO
+
+FNO_multimodal_2d.f_modes = 24 
+FNO_multimodal_2d.HIDDEN_DIM = 24
+FNO_multimodal_2d.hidden_freq = 24
+FNO_multimodal_2d.f_padding = 20
+FNO_multimodal_2d.domain_sizex = 64
+FNO_multimodal_2d.domain_sizey = 64
+FNO_multimodal_2d.mod_data_channels = 11
+FNO_multimodal_2d.pre_data_channels = 11
+FNO_multimodal_2d.outc = 2
+FNO_multimodal_2d.num_fourier_layers = 6
+FNO_multimodal_2d.ALPHA = 0.01
+
+model_factory.model_fn = @FNO_multimodal_2d

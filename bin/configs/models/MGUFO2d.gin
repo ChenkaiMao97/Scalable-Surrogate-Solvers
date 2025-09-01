@@ -1,0 +1,20 @@
+from sss.models import MG_UFO2d
+
+MGUFO2d.dim_mults = [1,2,3,4]
+MGUFO2d.conv_blocks = [1,1,2,2]
+MGUFO2d.use_fourier_setup = [False, False, False, False]
+MGUFO2d.use_fourier_solve = [False, True, True, True]
+MGUFO2d.setup_HIDDEN_DIM = 128
+MGUFO2d.setup_HIDDEN_DIM_freq = 128
+MGUFO2d.solve_HIDDEN_DIM = 8
+MGUFO2d.solve_HIDDEN_DIM_freq = 8
+MGUFO2d.f_modes = (64, 64)
+MGUFO2d.modes_descale = 2.0
+MGUFO2d.input_channel_eps = 2 # complex valued
+MGUFO2d.input_channel_rhs = 2
+MGUFO2d.outc = 2
+MGUFO2d.periodic = (False, False)
+MGUFO2d.ALPHA = 0.1
+MGUFO2d.field_mult = 1.0
+
+model_factory.model_fn = @MGUFO2d

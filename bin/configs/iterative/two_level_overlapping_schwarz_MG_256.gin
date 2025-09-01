@@ -1,0 +1,52 @@
+import sss.iterative.global_solver
+import sss.iterative.two_level_schwarz
+import sss.data.ceviche_solver
+import sss.trainers.trainer_MG
+
+Nx = 506
+Ny = 506
+
+GlobalSolver.Nx = %Nx
+GlobalSolver.Ny = %Ny
+GlobalSolver.solver_type = "two_level_Schwarz"
+GlobalSolver.DDM_iters = 30
+GlobalSolver.momentum = 0.1
+GlobalSolver.half_periodic = False
+GlobalSolver.save_intermediate = True
+GlobalSolver.plot_N = 5
+
+### solve from random data using ceviche solver ###
+CevicheSolver.num_shapes = 1
+CevicheSolver.output_dir = None
+CevicheSolver.Nx = %Nx
+CevicheSolver.Ny = %Ny
+CevicheSolver.wavelengths = [0.0008]
+CevicheSolver.dLs = [0.000018]
+CevicheSolver.eps_zooms = [5,10,20]
+CevicheSolver.eps_sigmas = [5,10,20]
+
+### schwarz setup ###
+TwoLevelSchwarz.min_overlap = 3
+TwoLevelSchwarz.region_size = (256,256)
+TwoLevelSchwarz.variable_overlap = True
+TwoLevelSchwarz.periodic_padding = True
+
+### subdomain solver ###
+SubdomainSolver.solver_type = "GMRES_setup"
+
+###### (1) 10 FPI model 0.3%
+# SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_with_PML-05_18_25T08_58_27/"
+# SubdomainSolver.trainer_fn = @TrainerMG
+
+###### (2) 1 FPI model 5%
+SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_with_PML-05_18_25T19_47_56/"
+SubdomainSolver.trainer_fn = @TrainerMG
+
+###### (3) damping model
+# SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband-05_23_25T03_46_11/"
+# SubdomainSolver.residual_type = 'damping'
+# SubdomainSolver.trainer_fn = @TrainerMG
+
+SubdomainSolver.max_iter = 3
+SubdomainSolver.tol = 1e-2
+SubdomainSolver.plot_x_r_history = False

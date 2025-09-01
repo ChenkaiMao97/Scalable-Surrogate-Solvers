@@ -1,0 +1,95 @@
+import sss.iterative.global_solver
+import sss.iterative.two_level_schwarz
+import sss.data.ceviche_solver
+import sss.trainers.trainer_MG
+
+##### 4 by 4
+# Nx = 1074
+# Ny = 1074
+
+##### 6 by 6
+# Nx = 1566
+# Ny = 1566
+
+##### 8 by 8
+Nx = 2058
+Ny = 2058
+# TwoLevelSchwarz.sparse_BQTBQ = True
+
+##### 10 by 10
+# Nx = 2550
+# Ny = 2550
+# TwoLevelSchwarz.sparse_BQTBQ = True
+
+##### 12 by 12
+# Nx = 3042
+# Ny = 3042
+# TwoLevelSchwarz.sparse_BQTBQ = True
+# result: non_uniform_DDM_with_direct_PML_solve256-08_21_25T05_04_30
+
+GlobalSolver.Nx = %Nx
+GlobalSolver.Ny = %Ny
+GlobalSolver.solver_type = "two_level_Schwarz"
+# GlobalSolver.solver_type = "Schwarz_GMRES"
+GlobalSolver.DDM_iters = 1000
+GlobalSolver.momentum = 0.4
+GlobalSolver.half_periodic = False
+GlobalSolver.save_intermediate = True
+GlobalSolver.plot_N = 5
+GlobalSolver.spacing = 40
+GlobalSolver.stop_error_th = 1e-3
+
+CevicheSolver.seed = 1
+
+### coarse space setup ###
+GlobalSolver.debug_coarse_space = True
+GlobalSolver.apply_coarse_space_every_N_iter = 1
+GlobalSolver.GMRES_iter_for_coarse_space = 10
+GlobalSolver.GMRES_iter_for_solve = 10
+
+TwoLevelSchwarz.use_coarse_space = True
+TwoLevelSchwarz.plot_basis_func = True
+TwoLevelSchwarz.plot_basis_func_num = 10
+TwoLevelSchwarz.eval_k_per_subdomain = 120
+TwoLevelSchwarz.keep_k_per_subdomain = 120
+TwoLevelSchwarz.coarse_space_momentum = 1.0
+
+### solve from random data using ceviche solver ###
+CevicheSolver.num_shapes = 1
+CevicheSolver.output_dir = None
+CevicheSolver.Nx = %Nx
+CevicheSolver.Ny = %Ny
+CevicheSolver.wavelengths = [0.0008]
+CevicheSolver.dLs = [0.000018]
+CevicheSolver.eps_zooms = [5,10,20]
+CevicheSolver.eps_sigmas = [5,10,20]
+
+CevicheSolver.eps_max = 8
+
+### schwarz setup ###
+TwoLevelSchwarz.min_overlap = 10
+TwoLevelSchwarz.region_size = (256,256)
+TwoLevelSchwarz.variable_overlap = True
+TwoLevelSchwarz.periodic_padding = False
+
+### subdomain solver ###
+SubdomainSolver.solver_type = "GMRES_setup"
+# SubdomainSolver.solver_type = "BICGSTAB"
+
+###### (1) 10 FPI model 0.3%
+# SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_with_PML-05_18_25T08_58_27/"
+# SubdomainSolver.trainer_fn = @TrainerMG
+
+###### (2) 1 FPI model 5%
+SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_with_PML-05_18_25T19_47_56/"
+SubdomainSolver.trainer_fn = @TrainerMG
+
+###### (3) damping model
+# SubdomainSolver.model_loading_path = "/media/tmp0/root/checkpoints/sss/train_subdomain_broadband_damping-05_20_25T23_10_50/"
+# SubdomainSolver.residual_type = 'damping'
+# SubdomainSolver.trainer_fn = @TrainerMG
+
+SubdomainSolver.max_iter = 5
+SubdomainSolver.tol = 1e-6
+SubdomainSolver.plot_x_r_history = False
+

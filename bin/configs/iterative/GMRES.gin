@@ -1,0 +1,20 @@
+import sss.iterative.subdomain_solver
+import sss.data.simulation_dataset
+
+#### prepare data ####
+SimulationDataset.data_folder = "/media/tmp0/chenkaim/checkpoints/sss/crop_subdomain-04_26_25T10_17_44/generated_devices"
+SimulationDataset.pml_dominate = True
+SimulationDataset.data_mult = 3.0e-5
+SubdomainSolver.dataset_fn = @SimulationDataset
+
+SubdomainSolver.solver_type = "GMRES"
+SubdomainSolver.model_loading_path = "/media/tmp0/chenkaim/checkpoints/sss/copied_models/pml_plus_device/"
+
+SubdomainSolver.source_mult = 1e7
+SubdomainSolver.bc_mult = 3e1
+
+SubdomainSolver.num_samples = 10
+SubdomainSolver.max_iter = 40
+SubdomainSolver.tol = 1e-6
+SubdomainSolver.plot_x_r_history = True
+SubdomainSolver.plot_N = 6
