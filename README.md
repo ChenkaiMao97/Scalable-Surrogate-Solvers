@@ -86,9 +86,9 @@ Two level schwarz with coarse space (inner region no PML)
 python -m bin.launch_job --job-config="bin/configs/single_GPU_job_config.gin" --experiment-name="non_uniform_DDM_with_direct_PML_solve256" --pipeline="DDM_global" --iterative-config="bin/configs/iterative/two_level_coarse_space_overlapping_schwarz_MG_256.gin"
 ```
 
-# Inverse Design
+### Inverse Design
 
-## Wavelength division multiplexer (WDM)
+#### Wavelength division multiplexer (WDM)
 with ceviche backend:
 ```bash
 python -m bin.launch_job --job-config="bin/configs/single_GPU_job_config.gin" --experiment-name="inverse_design_ceviche" --pipeline="inverse_design" --design-config="bin/configs/invde/wl_splitter_ceviche_TO.gin"
@@ -99,7 +99,7 @@ with DDM backend, 256 by 256 model:
 python -m bin.launch_job --job-config="bin/configs/multi_GPU_job_config.gin" --experiment-name="inverse_design_DDM256" --pipeline="inverse_design" --design-config="bin/configs/invde/wl_splitter_DDM_TO.gin" --iterative-config="bin/configs/iterative/nonuniform_roll_schwarz_MG_256.gin"
 ```
 
-## Grating coupler
+#### Grating coupler
 with ceviche backend:
 ```bash
 python -m bin.launch_job --job-config="bin/configs/single_GPU_job_config.gin" --experiment-name="inverse_design_ceviche_gc" --pipeline="inverse_design" --design-config="bin/configs/invde/grating_coupler_ceviche_TO.gin"
@@ -111,7 +111,7 @@ python -m bin.launch_job --job-config="bin/configs/multi_GPU_job_config.gin" --e
 ```
 
 
-## Metasurface
+#### Metasurface
 with ceviche backend:
 ```bash
 python -m bin.launch_job --job-config="bin/configs/single_GPU_job_config.gin" --experiment-name="inverse_design_ceviche_meta" --pipeline="inverse_design" --design-config="bin/configs/invde/metasurface_ceviche_TO.gin"
